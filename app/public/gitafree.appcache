@@ -1,3 +1,9 @@
-CACHE
+CACHE MANIFEST
+#To force a new version of the manifest to be downloaded, update the version to the current date.
+#Version 05/26/2012
 
-NETWORK
+CACHE:
+js/jquery-1.7.2.js
+css/ggs.css
+css/gita.css
+
