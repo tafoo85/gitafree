@@ -1,0 +1,21 @@
+#error {
+    width: 100%;
+    height: auto;
+    background-color: yellow;
+    color: red;
+    font-size: 1em;
+    display: none;
+}
+
+#errorButton {
+    float: right;
+}
+
+#error > ul {
+    list-style: none;
+    border: 1px #2e8b57 solid;
+}
+
+#error > ul > li {
+    border: 1px solid blue;
+}
