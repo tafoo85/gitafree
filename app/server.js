@@ -29,10 +29,17 @@ socket = io.on('connection', function(socket) {
 		socket.emit('KEY_READY', { payload: { key: sha256.digest('base64') } })
 	});
 	
+	socket.on('FILE_REQUEST', function(data) {
+		
+	});
+	
 	return socket;
 });
 
 app.put('/upload/:key', function(req, res) {
-	console.log('Trying to upload the file.')
+	if (req.params.id === '') {
+		console.log('Invalid key');
+		res.send('Invalid Request Key', 400);
+	}
 });
 
