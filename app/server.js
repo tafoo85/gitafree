@@ -31,6 +31,10 @@ socket = io.on('connection', function(socket) {
 		socket.emit('KEY_READY', { payload: { key: sha256.digest('base64') } })
 	});
 	
+	socket.on('FILE_REQUEST', function(data) {
+		
+	});
+	
 	return socket;
 });
 
