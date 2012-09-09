@@ -47,7 +47,7 @@ app.post('/upload/:key', function(req, res) {
             var connection = sql.createConnection({
                 host: 'localhost',
                 user: 'anthony',
-                password: 'f4h609lmk'
+                password: 'password'
             });
             connection.connect();
             connection.query('INSERT INTO `temp_file_storage`.`file` (`')
