@@ -1,6 +1,6 @@
 var express = require('express'),
 	app = express.createServer(), //create the express web server
-	io = require('socket.io').listen(app), //create the socket.io closure and listen at the app
+	io = require('socket.io').listen(app), //create the socket and listen for new connections on the app
 	crypto = require('crypto'),
     fs = require('fs'),
     sql = require('mysql');
