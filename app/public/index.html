@@ -15,76 +15,7 @@
 		<script src="js/gitaapp.js"></script>
 		<script>
 			$(document).ready(function() {
-				var socket = new io.connect('ws://' + window.location.host);
-				var attempts = 0;
-				var RETRY_LIMIT = 3;
-				
-				function uploadHandler(files) {
-					for(var i = 0; i < files.length; ++i) {
-						try {
-							GitaApp.upload(files[i]);
-						} catch(exception) {
-							$('#keylabel > span').html('');
-							alert(exception);
-						}
-					}
-				}
-				
-				socket.on('disconnect', function(message) {
-					if(attempts++ < RETRY_LIMIT)
-						socket = new io.connect('ws://' + window.location.host);
-				});
-				
-				try {
-					socket.on('FILE_READY', function(message) {
-						var payload = message.payload;
-						
-						if(GitaApp.getKey() === payload.key) {
-							for(var i = 0; i < payload.numFiles; ++i)
-								GitaApp.download(i);
-						} else {
-							throw {
-								code : 'INVALID_KEY',
-								errorString : "Invalid key event.  Please re-enter the secret key and try again."
-							};
-						}
-					});
-					
-					socket.on('INVALID_KEY', function(message) {
-						throw { 
-							code: message.payload.code, 
-							errorString: 'Invalid Secret Key.  Please check the key and try again.' 
-						};
-					});
-				} catch(exception) {
-
-				}
-
-				$('#sendbox').on('drop', function(event) {
-					event.stopPropagation();
-					event.preventDefault();
-					
-					var vanillaEvent = event.originalEvent;
-					var files = vanillaEvent.target.fileList || vanillaEvent.dataTransfer.files;
-					
-					socket.on('KEY_READY', function(message) {
-						var payload = message.payload;
-
-						$('<span>' + payload.key + '</span>').appendTo('#keylabel');
-						GitaApp.setKey(payload.key);
-						uploadHandler(files);
-					});
-					
-					if (!GitaApp.getKey())
-						socket.emit('KEY_REQUEST', {});
-					else
-						uploadHandler(files);
-				});
-
-				$('#receivebutton').click(function(event) {
-					var friendskey = $('friendskey').val();
-					socket.emit('FILE_REQUEST', {payload: { key: friendskey }})
-				});
+				GitaApp.intialize(); //mark-up ready, engage.			
 			});
 		</script>
 	</head>
@@ -114,5 +45,11 @@
 				</button>
 			</section>
 		</article>
+		<section id="errorSection" class="dialog error">
+				<header>
+					<h1>&nbsp;</h1>
+				</header>
+				<div class="content-body">&nbsp;</div>
+		</section>
 	</body>
 </html>
