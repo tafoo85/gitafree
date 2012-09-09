@@ -14,15 +14,23 @@ GitaApp = {
 	upload : function(file, progressCallback) {
 		if (!this.key)
 			throw new Error();
-
+			
 		var xhr = new XMLHttpRequest(), url = '/upload/' + this.key;
 
 		if (progressCallback !== undefined) {
 			xhr.upload.addEventListener('progress', progressCallback, false);
+            xhr.upload.addEventListener('onload', function(){
+                self.displayError({messsage: 'LOADED'});
+            })
 		}
-		xhr.open('PUT', url);
-		xhr.send(file);
-	},
+        formData.append('files', file);
+		xhr.open('POST', url, true);
+        xhr.setRequestHeader("Cache-Control", "no-cache");
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        xhr.setRequestHeader("X-File-Name", file.fileName);
+        xhr.setRequestHeader("X-File-Size", file.fileSize);
+		xhr.send(formData);
+    },
 
 	download : function(num) {
 		alert('should download a file.')
@@ -58,7 +66,14 @@ GitaApp = {
 	},
 	
 	uploadHandler : function(files) {
-		
+		for(var i = 0; i < files.length; ++i) {
+			try {
+				GitaApp.upload(files[i]);
+			} catch(exception) {
+				$('#keylabel > span').html('');
+        		GitaApp.displayError(exception);
+			}
+		}
 	},
 	
 	bindWidgetEvents : function() {
@@ -89,5 +104,27 @@ GitaApp = {
 		this.socket.on('INVALID_KEY', this.onInvalidKey);
 		this.socket.on('KEY_READY', this.onKeyReady);
 		this.bindWidgetEvents();
-	}
+	},
+
+    displayError: function(error) {
+        var errors = undefined;
+
+        if (!$.isArray(error)) {
+            errors = new Array();
+            errors.push(error);
+        } else {
+            errors = error;
+        }
+
+        for (var i = 0; i < errors.length; ++i) {
+            $('#error > ul').prepend('<li>' + errors[i].message + '</li>');
+        }
+
+        $('#error').show(300, 'linear');
+    },
+
+    clearError: function() {
+        $('#error > ul').html('');
+        $('#error').hide();
+    }
 }
